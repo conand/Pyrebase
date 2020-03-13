@@ -379,7 +379,26 @@ class Storage:
             if new_path.startswith("/"):
                 new_path = new_path[1:]
             self.path = new_path
+        self.path = self.path.replace("//", "/")
         return self
+
+    def get(self, token=None, media=False):
+         # reset path
+        path = self.path
+        self.path = None
+        request_ref = self.storage_bucket + "/o/{0}".format(quote(path, safe=''))
+        if media:
+            request_ref += "?alt=media"
+        if token:
+            headers = {"Authorization": "Firebase " + token}
+        else:
+            headers = {}
+        request_object = self.requests.get(request_ref, headers=headers)
+        raise_detailed_error(request_object)
+        if media:
+            return request_object.text
+        else:
+            return request_object.json()
 
     def put(self, file, token=None):
         # reset path
