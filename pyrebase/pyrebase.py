@@ -383,7 +383,7 @@ class Storage:
         return self
 
     def get(self, token=None, media=False):
-         # reset path
+        # reset path
         path = self.path
         self.path = None
         request_ref = self.storage_bucket + "/o/{0}".format(quote(path, safe=''))
